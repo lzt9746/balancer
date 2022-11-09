@@ -29,13 +29,14 @@ var (
 type HTTPProxy struct {
 	hostMap map[string]*httputil.ReverseProxy
 	lb      balancer.Balancer
+	name    string
 
 	sync.RWMutex // protect alive
 	alive        map[string]bool
 }
 
 // NewHTTPProxy create  new reverse proxy with url and balancer algorithm
-func NewHTTPProxy(targetHosts []string, algorithm string) (
+func NewHTTPProxy(targetHosts []string, algorithm string, name string) (
 	*HTTPProxy, error) {
 
 	hosts := make([]string, 0)
@@ -70,6 +71,7 @@ func NewHTTPProxy(targetHosts []string, algorithm string) (
 		hostMap: hostMap,
 		lb:      lb,
 		alive:   alive,
+		name:    name,
 	}, nil
 }
 

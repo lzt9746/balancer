@@ -10,8 +10,6 @@
 
 schema: http                  # support http and https
 port: 8089                    # port for balancer
-ssl_certificate:
-ssl_certificate_key:
 tcp_health_check: true
 health_check_interval: 3      # health check interval (second)
 # The maximum number of requests that the balancer can handle at the same time
@@ -19,9 +17,21 @@ health_check_interval: 3      # health check interval (second)
 max_allowed: 100
 location:                     # route matching for reverse proxy
   - pattern: /
+    name: root
+    listen: 80
+    schema: http
     proxy_pass:                   # URL of the reverse proxy
-    - "http://192.168.1.1"
-    - "http://192.168.1.2:1015"
-    - "https://192.168.1.2"
-    - "http://my-server.com"
+#    - "http://192.168.1.1"
+#    - "http://192.168.1.2:1015"
+#    - "https://192.168.1.2"
+#    - "http://my-server.com"
+    - "http://192.168.1.72:8000"
     balance_mode: round-robin     # load balancing algorithm
+
+  - pattern: /api
+    name: api
+    listen: 81
+    schema: http
+    proxy_pass:
+    - "http://192.168.1.72:8000"
+    balance_mode: round-robin

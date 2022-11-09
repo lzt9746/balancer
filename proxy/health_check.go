@@ -34,12 +34,12 @@ func (h *HTTPProxy) healthCheck(host string, interval uint) {
 	ticker := time.NewTicker(time.Duration(interval) * time.Second)
 	for range ticker.C {
 		if !IsBackendAlive(host) && h.ReadAlive(host) {
-			log.Printf("Site unreachable, remove %s from load balancer.", host)
+			log.Printf("Router \"%s\" unreachable, remove %s from load balancer.", h.name, host)
 
 			h.SetAlive(host, false)
 			h.lb.Remove(host)
 		} else if IsBackendAlive(host) && !h.ReadAlive(host) {
-			log.Printf("Site reachable, add %s to load balancer.", host)
+			log.Printf("Router \"%s\" reachable, add %s to load balancer.", h.name, host)
 
 			h.SetAlive(host, true)
 			h.lb.Add(host)

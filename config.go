@@ -22,21 +22,28 @@ ___ _ _  _ _   _ ___  ____ _    ____ _  _ ____ ____ ____
 
 // Config configuration details of balancer
 type Config struct {
-	SSLCertificateKey   string      `yaml:"ssl_certificate_key"`
 	Location            []*Location `yaml:"location"`
-	Schema              string      `yaml:"schema"`
-	Port                int         `yaml:"port"`
-	SSLCertificate      string      `yaml:"ssl_certificate"`
 	HealthCheck         bool        `yaml:"tcp_health_check"`
 	HealthCheckInterval uint        `yaml:"health_check_interval"`
 	MaxAllowed          uint        `yaml:"max_allowed"`
 }
 
+type Header struct {
+	Key   string `yaml:"key"`
+	Value string `yaml:"value"`
+}
+
 // Location routing details of balancer
 type Location struct {
-	Pattern     string   `yaml:"pattern"`
-	ProxyPass   []string `yaml:"proxy_pass"`
-	BalanceMode string   `yaml:"balance_mode"`
+	Name              string    `yaml:"name"`
+	Listen            int       `yaml:"listen"`
+	Schema            string    `yaml:"schema"`
+	SSLCertificate    string    `yaml:"ssl_certificate"`
+	SSLCertificateKey string    `yaml:"ssl_certificate_key"`
+	Pattern           string    `yaml:"pattern"`
+	ProxyPass         []string  `yaml:"proxy_pass"`
+	BalanceMode       string    `yaml:"balance_mode"`
+	SetHeader         []*Header `yaml:"set_header"`
 }
 
 // ReadConfig read configuration from `fileName` file
@@ -55,25 +62,29 @@ func ReadConfig(fileName string) (*Config, error) {
 
 // Print print config details
 func (c *Config) Print() {
-	fmt.Printf("%s\nSchema: %s\nPort: %d\nHealth Check: %v\nLocation:\n",
-		ascii, c.Schema, c.Port, c.HealthCheck)
+	fmt.Printf("%s\nHealth Check: %v\nLocation:\n",
+		ascii, c.HealthCheck)
 	for _, l := range c.Location {
-		fmt.Printf("\tRoute: %s\n\tProxy Pass: %s\n\tMode: %s\n\n",
-			l.Pattern, l.ProxyPass, l.BalanceMode)
+		fmt.Printf("\tRoute: %s\n\tName: %s\n\tSchema:%s\n\tListen:%d\n\tProxy Pass: %s\n\tMode: %s\n\n",
+			l.Pattern, l.Name, l.Schema, l.Listen, l.ProxyPass, l.BalanceMode)
 	}
 }
 
 // Validation verify the configuration details of the balancer
 func (c *Config) Validation() error {
-	if c.Schema != "http" && c.Schema != "https" {
-		return fmt.Errorf("the schema \"%s\" not supported", c.Schema)
+	for _, l := range c.Location {
+		if l.Schema != "http" && l.Schema != "https" {
+			return fmt.Errorf("the schema \"%s\" not supported", l.Schema)
+		}
+		if l.Schema == "https" && (len(l.SSLCertificate) == 0 || len(l.SSLCertificateKey) == 0) {
+			return errors.New("the https proxy requires ssl_certificate_key and ssl_certificate")
+		}
 	}
+
 	if len(c.Location) == 0 {
 		return errors.New("the details of location cannot be null")
 	}
-	if c.Schema == "https" && (len(c.SSLCertificate) == 0 || len(c.SSLCertificateKey) == 0) {
-		return errors.New("the https proxy requires ssl_certificate_key and ssl_certificate")
-	}
+
 	if c.HealthCheckInterval < 1 {
 		return errors.New("health_check_interval must be greater than 0")
 	}
