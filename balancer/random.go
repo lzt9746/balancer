@@ -22,7 +22,7 @@ type Random struct {
 }
 
 // NewRandom create new Random balancer
-func NewRandom(hosts []string) Balancer {
+func NewRandom(hosts []string, _ any) Balancer {
 	return &Random{hosts: hosts,
 		rnd: rand.New(rand.NewSource(time.Now().UnixNano()))}
 }

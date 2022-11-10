@@ -5,6 +5,7 @@
 package proxy
 
 import (
+	"github.com/zehuamama/balancer/utils"
 	"log"
 	"time"
 )
@@ -33,12 +34,12 @@ func (h *HTTPProxy) HealthCheck(interval uint) {
 func (h *HTTPProxy) healthCheck(host string, interval uint) {
 	ticker := time.NewTicker(time.Duration(interval) * time.Second)
 	for range ticker.C {
-		if !IsBackendAlive(host) && h.ReadAlive(host) {
+		if !utils.IsBackendAlive(host) && h.ReadAlive(host) {
 			log.Printf("Router \"%s\" unreachable, remove %s from load balancer.", h.name, host)
 
 			h.SetAlive(host, false)
 			h.lb.Remove(host)
-		} else if IsBackendAlive(host) && !h.ReadAlive(host) {
+		} else if utils.IsBackendAlive(host) && !h.ReadAlive(host) {
 			log.Printf("Router \"%s\" reachable, add %s to load balancer.", h.name, host)
 
 			h.SetAlive(host, true)

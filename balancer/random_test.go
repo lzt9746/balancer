@@ -94,7 +94,7 @@ func TestRandom_Balance(t *testing.T) {
 	}{
 		{
 			"test-1",
-			NewRandom([]string{"http://127.0.0.1:1011"}),
+			NewRandom([]string{"http://127.0.0.1:1011"}, nil),
 			"",
 			expect{
 				"http://127.0.0.1:1011",
@@ -103,7 +103,7 @@ func TestRandom_Balance(t *testing.T) {
 		},
 		{
 			"test-2",
-			NewRandom([]string{}),
+			NewRandom([]string{}, nil),
 			"",
 			expect{
 				"",

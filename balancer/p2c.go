@@ -31,7 +31,7 @@ type P2C struct {
 }
 
 // NewP2C create new P2C balancer
-func NewP2C(hosts []string) Balancer {
+func NewP2C(hosts []string, _ any) Balancer {
 	p := &P2C{
 		hosts:   []*host{},
 		loadMap: make(map[string]*host),

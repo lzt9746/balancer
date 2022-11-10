@@ -18,7 +18,7 @@ type Consistent struct {
 }
 
 // NewConsistent create new Consistent balancer
-func NewConsistent(hosts []string) Balancer {
+func NewConsistent(hosts []string, _ any) Balancer {
 	c := &Consistent{consistent.New()}
 	for _, h := range hosts {
 		c.ch.Add(h)

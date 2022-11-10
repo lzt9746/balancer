@@ -16,7 +16,7 @@ type Bounded struct {
 }
 
 // NewBounded create new Bounded balancer
-func NewBounded(hosts []string) Balancer {
+func NewBounded(hosts []string, _ any) Balancer {
 	c := &Bounded{consistent.New()}
 	for _, h := range hosts {
 		c.ch.Add(h)

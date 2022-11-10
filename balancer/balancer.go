@@ -24,15 +24,15 @@ type Balancer interface {
 
 // Factory is the factory that generates Balancer,
 // and the factory design pattern is used here
-type Factory func([]string) Balancer
+type Factory func([]string, any) Balancer
 
 var factories = make(map[string]Factory)
 
 // Build generates the corresponding Balancer according to the algorithm
-func Build(algorithm string, hosts []string) (Balancer, error) {
+func Build(algorithm string, hosts []string, args any) (Balancer, error) {
 	factory, ok := factories[algorithm]
 	if !ok {
 		return nil, AlgorithmNotSupportedError
 	}
-	return factory(hosts), nil
+	return factory(hosts, args), nil
 }

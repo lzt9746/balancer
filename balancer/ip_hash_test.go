@@ -20,14 +20,14 @@ func TestNewIPHash_Add(t *testing.T) {
 		{
 			"test-1",
 			NewIPHash([]string{"http://127.0.0.1:1011",
-				"http://127.0.0.1:1012", "http://127.0.0.1:1013"}),
+				"http://127.0.0.1:1012", "http://127.0.0.1:1013"}, nil),
 			"http://127.0.0.1:1012",
 			&IPHash{hosts: []string{"http://127.0.0.1:1011",
 				"http://127.0.0.1:1012", "http://127.0.0.1:1013"}},
 		},
 		{
 			"test-2",
-			NewIPHash([]string{"http://127.0.0.1:1011", "http://127.0.0.1:1012"}),
+			NewIPHash([]string{"http://127.0.0.1:1011", "http://127.0.0.1:1012"}, nil),
 			"http://127.0.0.1:1013",
 			&IPHash{hosts: []string{"http://127.0.0.1:1011",
 				"http://127.0.0.1:1012", "http://127.0.0.1:1013"}},
@@ -52,13 +52,13 @@ func TestIPHash_Remove(t *testing.T) {
 		{
 			"test-1",
 			NewIPHash([]string{"http://127.0.0.1:1011",
-				"http://127.0.0.1:1012", "http://127.0.0.1:1013"}),
+				"http://127.0.0.1:1012", "http://127.0.0.1:1013"}, nil),
 			"http://127.0.0.1:1012",
 			&IPHash{hosts: []string{"http://127.0.0.1:1011", "http://127.0.0.1:1013"}},
 		},
 		{
 			"test-2",
-			NewIPHash([]string{"http://127.0.0.1:1011", "http://127.0.0.1:1012"}),
+			NewIPHash([]string{"http://127.0.0.1:1011", "http://127.0.0.1:1012"}, nil),
 			"http://127.0.0.1:1013",
 			&IPHash{hosts: []string{"http://127.0.0.1:1011", "http://127.0.0.1:1012"}},
 		},
@@ -84,7 +84,7 @@ func TestIPHash_Balance(t *testing.T) {
 		expect expect
 	}{
 		{"test-1",
-			NewIPHash([]string{"http://127.0.0.1:1011", "http://127.0.0.1:1012", "http://127.0.0.1:1013"}),
+			NewIPHash([]string{"http://127.0.0.1:1011", "http://127.0.0.1:1012", "http://127.0.0.1:1013"}, nil),
 			"192.168.1.1",
 			expect{
 				"http://127.0.0.1:1011",
@@ -93,7 +93,7 @@ func TestIPHash_Balance(t *testing.T) {
 		},
 		{
 			"test-2",
-			NewIPHash([]string{}),
+			NewIPHash([]string{}, nil),
 			"192.168.1.1",
 			expect{
 				"",

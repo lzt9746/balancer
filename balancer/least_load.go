@@ -27,7 +27,7 @@ type LeastLoad struct {
 }
 
 // NewLeastLoad create new LeastLoad balancer
-func NewLeastLoad(hosts []string) Balancer {
+func NewLeastLoad(hosts []string, _ any) Balancer {
 	ll := &LeastLoad{heap: fibHeap.NewFibHeap()}
 	for _, h := range hosts {
 		ll.Add(h)

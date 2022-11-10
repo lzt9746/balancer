@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package proxy
+package utils
 
 import (
 	"fmt"
@@ -15,6 +15,16 @@ import (
 
 // ConnectionTimeout refers to connection timeout for health check
 var ConnectionTimeout = 3 * time.Second
+
+var (
+	XRealIP       = http.CanonicalHeaderKey("X-Real-IP")
+	XProxy        = http.CanonicalHeaderKey("X-Proxy")
+	XForwardedFor = http.CanonicalHeaderKey("X-Forwarded-For")
+)
+
+var (
+	ReverseProxy = "Balancer-Reverse-Proxy"
+)
 
 // GetIP get client IP
 func GetIP(r *http.Request) string {

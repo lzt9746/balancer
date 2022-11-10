@@ -21,7 +21,7 @@ func TestRoundRobin_Add(t *testing.T) {
 		{
 			"test-1",
 			NewRoundRobin([]string{"http://127.0.0.1:1011",
-				"http://127.0.0.1:1012", "http://127.0.0.1:1013"}),
+				"http://127.0.0.1:1012", "http://127.0.0.1:1013"}, nil),
 			"http://127.0.0.1:1013",
 			&RoundRobin{hosts: []string{"http://127.0.0.1:1011",
 				"http://127.0.0.1:1012", "http://127.0.0.1:1013"}, i: 0},
@@ -29,7 +29,7 @@ func TestRoundRobin_Add(t *testing.T) {
 		{
 			"test-2",
 			NewRoundRobin([]string{"http://127.0.0.1:1011",
-				"http://127.0.0.1:1012"}),
+				"http://127.0.0.1:1012"}, nil),
 			"http://127.0.0.1:1012",
 			&RoundRobin{hosts: []string{"http://127.0.0.1:1011",
 				"http://127.0.0.1:1012"}, i: 0},
@@ -53,13 +53,13 @@ func TestRoundRobin_Remove(t *testing.T) {
 	}{
 		{
 			"test-1",
-			NewRoundRobin([]string{"http://127.0.0.1:1011", "http://127.0.0.1:1012"}),
+			NewRoundRobin([]string{"http://127.0.0.1:1011", "http://127.0.0.1:1012"}, nil),
 			"http://127.0.0.1:1013",
 			&RoundRobin{hosts: []string{"http://127.0.0.1:1011", "http://127.0.0.1:1012"}},
 		},
 		{
 			"test-2",
-			NewRoundRobin([]string{"http://127.0.0.1:1011", "http://127.0.0.1:1012"}),
+			NewRoundRobin([]string{"http://127.0.0.1:1011", "http://127.0.0.1:1012"}, nil),
 			"http://127.0.0.1:1012",
 			&RoundRobin{hosts: []string{"http://127.0.0.1:1011"}},
 		},
@@ -86,7 +86,7 @@ func TestRoundRobin_Balance(t *testing.T) {
 	}{
 		{
 			"test-1",
-			NewRoundRobin([]string{"http://127.0.0.1:1011"}),
+			NewRoundRobin([]string{"http://127.0.0.1:1011"}, nil),
 			"",
 			expect{
 				"http://127.0.0.1:1011",
@@ -95,7 +95,7 @@ func TestRoundRobin_Balance(t *testing.T) {
 		},
 		{
 			"test-2",
-			NewRoundRobin([]string{}),
+			NewRoundRobin([]string{}, nil),
 			"",
 			expect{
 				"",

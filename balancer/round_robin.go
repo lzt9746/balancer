@@ -20,7 +20,7 @@ func init() {
 }
 
 // NewRoundRobin create new RoundRobin balancer
-func NewRoundRobin(hosts []string) Balancer {
+func NewRoundRobin(hosts []string, _ any) Balancer {
 	return &RoundRobin{i: 0, hosts: hosts}
 }
 

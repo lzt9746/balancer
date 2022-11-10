@@ -6,6 +6,7 @@ package proxy
 
 import (
 	"fmt"
+	"github.com/zehuamama/balancer/utils"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -13,16 +14,6 @@ import (
 	"sync"
 
 	"github.com/zehuamama/balancer/balancer"
-)
-
-var (
-	XRealIP       = http.CanonicalHeaderKey("X-Real-IP")
-	XProxy        = http.CanonicalHeaderKey("X-Proxy")
-	XForwardedFor = http.CanonicalHeaderKey("X-Forwarded-For")
-)
-
-var (
-	ReverseProxy = "Balancer-Reverse-Proxy"
 )
 
 // HTTPProxy refers to a reverse proxy in the balancer
@@ -43,6 +34,9 @@ func NewHTTPProxy(targetHosts []string, algorithm string, name string) (
 	hostMap := make(map[string]*httputil.ReverseProxy)
 	alive := make(map[string]bool)
 	for _, targetHost := range targetHosts {
+		if algorithm == "weight-round" {
+			targetHost = utils.SplitStringBySpaces(targetHost)[0]
+		}
 		url, err := url.Parse(targetHost)
 		if err != nil {
 			return nil, err
@@ -52,17 +46,17 @@ func NewHTTPProxy(targetHosts []string, algorithm string, name string) (
 		originDirector := proxy.Director
 		proxy.Director = func(req *http.Request) {
 			originDirector(req)
-			req.Header.Set(XProxy, ReverseProxy)
-			req.Header.Set(XRealIP, GetIP(req))
+			req.Header.Set(utils.XProxy, utils.ReverseProxy)
+			req.Header.Set(utils.XRealIP, utils.GetIP(req))
 		}
 
-		host := GetHost(url)
+		host := utils.GetHost(url)
 		alive[host] = true // initial mark alive
 		hostMap[host] = proxy
 		hosts = append(hosts, host)
 	}
 
-	lb, err := balancer.Build(algorithm, hosts)
+	lb, err := balancer.Build(algorithm, hosts, targetHosts)
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +79,8 @@ func (h *HTTPProxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
-	host, err := h.lb.Balance(GetIP(r))
+	host, err := h.lb.Balance(utils.GetIP(r))
+	log.Println("request url:", r.URL.String(), "host:", host)
 	if err != nil {
 		w.WriteHeader(http.StatusBadGateway)
 		_, _ = w.Write([]byte(fmt.Sprintf("balance error: %s", err.Error())))

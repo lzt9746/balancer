@@ -20,7 +20,7 @@ type IPHash struct {
 }
 
 // NewIPHash create new IPHash balancer
-func NewIPHash(hosts []string) Balancer {
+func NewIPHash(hosts []string, _ any) Balancer {
 	return &IPHash{hosts: hosts}
 }
 

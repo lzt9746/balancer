@@ -13,7 +13,7 @@ import (
 // TestLeastLoad_Balance .
 func TestLeastLoad_Balance(t *testing.T) {
 	expect, err := Build(LeastLoadBalancer, []string{"192.168.1.1:1015",
-		"192.168.1.1:1016", "192.168.1.1:1017", "192.168.1.1:1018"})
+		"192.168.1.1:1016", "192.168.1.1:1017", "192.168.1.1:1018"}, nil)
 	expect.Remove("192.168.1.1:1018")
 	assert.Equal(t, err, nil)
 	expect.Inc("192.168.1.1:1015")
@@ -22,7 +22,7 @@ func TestLeastLoad_Balance(t *testing.T) {
 	expect.Inc("192.168.1.1:1018")
 	expect.Done("192.168.1.1:1018")
 	expect.Done("192.168.1.1:1016")
-	ll := NewLeastLoad([]string{"192.168.1.1:1016"})
+	ll := NewLeastLoad([]string{"192.168.1.1:1016"}, nil)
 	ll.Remove("192.168.1.1:1018")
 	ll.Add("192.168.1.1:1015")
 	ll.Add("192.168.1.1:1016")

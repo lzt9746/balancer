@@ -25,8 +25,10 @@ location:                     # route matching for reverse proxy
 #    - "http://192.168.1.2:1015"
 #    - "https://192.168.1.2"
 #    - "http://my-server.com"
-    - "http://192.168.1.72:8000"
-    balance_mode: round-robin     # load balancing algorithm
+    - "http://192.168.1.72:8002 4"
+    - "http://192.168.1.72:8000 2"
+    - "http://192.168.1.72:8001 3"
+    balance_mode: weight-round     # load balancing algorithm
 
   - pattern: /api
     name: api
